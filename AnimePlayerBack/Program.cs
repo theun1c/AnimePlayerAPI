@@ -1,5 +1,8 @@
+using AnimePlayerBack.Contracts;
 using AnimePlayerBack.Data;
+using AnimePlayerBack.Models;
 using Microsoft.EntityFrameworkCore;
+using Supabase;
 
 namespace AnimePlayerBack
 {
@@ -8,27 +11,20 @@ namespace AnimePlayerBack
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddControllers();
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigin", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5173") // Разрешить запросы от любого источника
-                           .AllowAnyMethod() // Разрешить все HTTP-методы (GET, POST, PUT и т.д.)
-                          .AllowAnyHeader(); // Разрешить все заголовки
-                });
-            });
-
-            // added swagger services
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // auto-get connection string
-            builder.Services.AddDbContext<PlayerDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Database"))
-            );
-
+            builder.Services.AddScoped<Supabase.Client>(_ =>
+            new Supabase.Client(
+                builder.Configuration["SupabaseUrl"],
+                builder.Configuration["SupabaseKey"],
+                new SupabaseOptions
+                {
+                    AutoRefreshToken = true,
+                    AutoConnectRealtime = true,
+                }));
+            
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -36,9 +32,35 @@ namespace AnimePlayerBack
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors("AllowSpecificOrigin");
+
+            app.MapPost("/anime", async (
+                CreateAnimeRequest request,
+                Supabase.Client client) =>
+            {
+                var anime = new AnimeModel
+                {
+                    Name = request.Name,
+                    Episodes = request.Episodes,
+                    Seasons = request.Seasons,
+                };
+
+                var response = await client.From<AnimeModel>().Insert(anime);
+                var newAnime = response.Models.First();
+
+                return Results.Ok(newAnime.Id);   
+            });
+
+            app.MapGet("/anime/{id}", async (Guid id, Supabase.Client client) =>
+            {
+                var response = await client
+                .From<AnimeModel>()
+                .Where(n => n.Id == id)
+                .Get();
+            });
+
+
             app.UseHttpsRedirection();
-            app.MapControllers();
+
             app.Run();
         }
     }

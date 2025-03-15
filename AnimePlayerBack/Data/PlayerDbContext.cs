@@ -9,7 +9,7 @@ namespace AnimePlayerBack.Data
             
         }
 
-        public DbSet<SliderItem> SliderItems => Set<SliderItem>();
+
 
     }
 }

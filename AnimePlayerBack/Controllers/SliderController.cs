@@ -27,12 +27,12 @@ namespace AnimePlayerBack.Controllers
         //    return Ok();
         //}
 
-        [HttpGet]
-        public async Task<IActionResult> GetSliderItem()
-        {
-            var sliderItems = await _dbContext.SliderItems.ToListAsync();
-            return Ok(sliderItems);
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetSliderItem()
+        //{
+        //    var sliderItems = await _dbContext.SliderItems.ToListAsync();
+        //    return Ok(sliderItems);
+        //}
 
     }
 }
