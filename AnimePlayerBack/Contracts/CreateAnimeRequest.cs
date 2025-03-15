@@ -11,3 +11,4 @@ namespace AnimePlayerBack.Contracts
         public int Seasons { get; set; }
     }
 }
+

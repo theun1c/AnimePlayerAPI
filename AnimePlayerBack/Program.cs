@@ -17,8 +17,8 @@ namespace AnimePlayerBack
 
             builder.Services.AddScoped<Supabase.Client>(_ =>
             new Supabase.Client(
-                builder.Configuration["SupabaseUrl"],
-                builder.Configuration["SupabaseKey"],
+                builder.Configuration["Supabase:Url"],
+                builder.Configuration["Supabase:Key"],
                 new SupabaseOptions
                 {
                     AutoRefreshToken = true,
@@ -56,8 +56,33 @@ namespace AnimePlayerBack
                 .From<AnimeModel>()
                 .Where(n => n.Id == id)
                 .Get();
+
+                var anime = response.Models.FirstOrDefault();
+                if(anime == null)
+                {
+                    return Results.NotFound();
+                }
+
+                var animeResponse = new AnimeResponse
+                {
+                    Id = anime.Id,
+                    Name = anime.Name,
+                    Episodes = anime.Episodes,
+                    Seasons = anime.Seasons,
+                };
+
+                return Results.Ok(animeResponse);    
             });
 
+            app.MapDelete("/anime/{id}", async (Guid id, Supabase.Client client) =>
+            {
+                await client 
+                .From<AnimeModel>()
+                .Where (n => n.Id == id)
+                .Delete(); 
+
+                return Results.NoContent();
+            });
 
             app.UseHttpsRedirection();
 
