@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AnimePlayerBack")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47b83cdfba833d36a3a4e48655434f2143d81abc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da064ccc1447911c72d00857d8dfb1e44194e37c")]
 [assembly: System.Reflection.AssemblyProductAttribute("AnimePlayerBack")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AnimePlayerBack")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

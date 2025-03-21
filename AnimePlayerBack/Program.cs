@@ -32,8 +32,6 @@ namespace AnimePlayerBack
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-                
-
 
             app.UseHttpsRedirection();
 
